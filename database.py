@@ -9,8 +9,10 @@ def get_connection():
     # включаем внешние ключи в SQLite.
     conn.execute("PRAGMA foreign_keys = ON;")
     try:
-        yield conn
-        conn.commit()
+        # Превращает функцию в генератор, функция работает до yield и оставливается
+        # yield нужен когда нельзя (или не хочется) вернуть всё сразу.
+        yield conn # ← тут “пауза”: даём пользователю поработать
+        conn.commit() # ← возобновление: сохраняем изменения
     finally:
         conn.close()
 
