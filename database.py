@@ -7,10 +7,13 @@ DB_NAME = "bank.db"
 def get_connection():
     conn = sqlite3.connect(DB_NAME)
     # включаем внешние ключи в SQLite.
+    # Эта строка включает их поддержку, чтобы SQLite соблюдал связи между таблицами и не позволял удалять/вставлять несовместимые данные.
     conn.execute("PRAGMA foreign_keys = ON;")
     try:
-        yield conn
-        conn.commit()
+        # Превращает функцию в генератор, функция работает до yield и оставливается
+        # yield нужен когда нельзя (или не хочется) вернуть всё сразу.
+        yield conn # ← тут “пауза”: даём пользователю поработать
+        conn.commit() # ← возобновление: сохраняем изменения
     finally:
         conn.close()
 
