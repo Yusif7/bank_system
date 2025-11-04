@@ -17,7 +17,9 @@ class Client:
                 "INSERT INTO clients(name, email) VALUES(?, ?)",
                 (self.name, self.email)
             )
-            self.id = cur.lastrowid
+            # атрибут курсора, который возвращает ID последней вставленной строки
+            # работает только после выполнения INSERT, и только если поле ID имеет автоинкремент
+            self.id = cur.lastrowid # Сохрани в объекте id — идентификатор только что вставленной записи в базу данных.
         return self
 
     # Обновить имя/email клиента
