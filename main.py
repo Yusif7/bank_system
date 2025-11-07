@@ -1,37 +1,32 @@
 from database import initialize_database
 from models.client import Client
 from models.account import Account
+from models.transaction import Transaction
 
 def main():
     initialize_database()
 
-    # Создаём клиента
-    client = Client(name="Aza", email="aza@example.com").save()
-    print("Клиент создан:", client)
+    # создаём клиентов
+    c1 = Client(name="Murad", email="Murad@example.com").save()
+    c2 = Client(name="Vasif", email="vasif@example.com").save()
+    client_list = [c1,c2]
+    for client in client_list:
+        print("Клиент создан:", client)
 
-    # Открываем счёт
-    acc = Account(client_id=client.id, balance=500, currency="AZN").save()
-    print("Счёт открыт:", acc)
+    # открываем счета
+    a1 = Account(client_id=c1.id, balance=500, currency="AZN").save()
+    a2 = Account(client_id=c2.id, balance=1000, currency="AZN").save()
 
-    # Пополняем
-    acc.deposit(200)
-    print("После пополнения:", Account.get_by_id(acc.id))
+    # депозит
+    Transaction.deposit(a1.id, 200)
+    # снятие
+    Transaction.withdraw(a2.id, 150)
+    # перевод
+    Transaction.transfer(a1.id, a2.id, 100)
 
-    # Снимаем
-    acc.withdraw(150)
-    print("После снятия:", Account.get_by_id(acc.id))
-
-    # Заморозим и попробуем снять снова (должна быть ошибка)
-    acc.set_status("frozen")
-    try:
-        acc.withdraw(10)
-    except ValueError as e:
-        print("Ошибка:", e)
-
-    # Покажем все счета клиента
-    print("\nСчета клиента:")
-    for a in Account.list_by_client(client.id):
-        print(" ", a)
+    print("\n=== Список всех транзакций ===")
+    for tr in Transaction.list_all():
+        print(tr)
 
 if __name__ == "__main__":
     main()
