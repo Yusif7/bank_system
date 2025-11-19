@@ -59,3 +59,14 @@ def initialize_database():
             FOREIGN KEY (to_account)   REFERENCES accounts(id) ON DELETE SET NULL
         );
         """)
+
+
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            role TEXT NOT NULL CHECK(role IN ('admin','manager','cashier'))
+        );
+        """)
+
